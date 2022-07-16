@@ -47,13 +47,12 @@ def test():
     f1: float = f1_score(labels, preds, average="macro")
     v.lr_scheduler.step(accuracy)
     t.close()
-    return (
-        v.current_epoch,
-        accuracy,
-        precision,
-        recall,
-        f1,
-    )
+    return {
+        "accuracy": accuracy,
+        "precision": precision,
+        "recall": recall,
+        "f1": f1,
+    }
 
 
 def loop():
@@ -68,11 +67,8 @@ def loop():
 
     while v.current_epoch <= args.num_epochs:
         train()
-        result = test()
-        v.writer.add_scalar("accuracy", result[1], v.current_epoch)
-        v.writer.add_scalar("precision", result[2], v.current_epoch)
-        v.writer.add_scalar("recall", result[3], v.current_epoch)
-        v.writer.add_scalar("f1", result[4], v.current_epoch)
+        for key, value in test().items():
+            v.writer.add_scalar(key, value, v.current_epoch)
         os.makedirs(f"./saves/{tag}/tb", exist_ok=True)
         torch.save(
             {
