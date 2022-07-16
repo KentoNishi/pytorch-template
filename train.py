@@ -69,7 +69,7 @@ def loop():
         train()
         for key, value in test().items():
             v.writer.add_scalar(key, value, v.current_epoch)
-        os.makedirs(f"./saves/{tag}/tb", exist_ok=True)
+        os.makedirs(f"./saves/{tag}", exist_ok=True)
         torch.save(
             {
                 "epoch": v.current_epoch,
