@@ -10,5 +10,5 @@ lr_scheduler: Optional[torch.optim.lr_scheduler._LRScheduler] = None
 criterion: Optional[torch.nn.modules.loss._Loss] = None
 trainloader: Optional[DataLoader] = None
 testloader: Optional[DataLoader] = None
-current_epoch: int = 0
 writer: Optional[SummaryWriter] = None
+current_epoch: int = 0
