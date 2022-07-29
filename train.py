@@ -4,13 +4,15 @@ import os
 import torch
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
 from torch.optim import SGD
-from torch.optim.lr_scheduler import ReduceLROnPlateau
+
+# from torch.optim.lr_scheduler import ReduceLROnPlateau
 from torch.utils.tensorboard import SummaryWriter
 from tqdm import tqdm
 
 import args
 import configs
 import vars as v
+import json
 
 
 def train():
@@ -45,7 +47,7 @@ def test():
     precision: float = precision_score(labels, preds, average="macro")
     recall: float = recall_score(labels, preds, average="macro")
     f1: float = f1_score(labels, preds, average="macro")
-    v.lr_scheduler.step(accuracy)
+    # v.lr_scheduler.step(accuracy)
     t.close()
     return {
         "accuracy": accuracy,
@@ -58,18 +60,31 @@ def test():
 def loop():
     v.model = v.model.to(args.device)
     v.optimizer = SGD(
-        v.model.parameters(), lr=args.learning_rate, momentum=args.momentum
+        v.model.parameters(), lr=args.learning_rates[0][0], momentum=args.momentum
     )
     v.current_epoch = 1
-    v.lr_scheduler = ReduceLROnPlateau(v.optimizer, "max")
+    # v.lr_scheduler = ReduceLROnPlateau(v.optimizer, "max")
     v.criterion = torch.nn.CrossEntropyLoss()
+    os.makedirs(f"./saves/{tag}", exist_ok=True)
     v.writer = SummaryWriter(log_dir=f"./saves/{tag}")
+    with open(f"./saves/{tag}/{tag}.json", "w+") as f:
+        vs = vars(args)
+        json.dump(
+            { k: vs[k] for k in vs if not k.startswith("_") and not hasattr(vs[k], "__dict__") },
+            f,
+            indent=2,
+            default=lambda o: str(o),
+        )
 
+    current_epoch_index = 0
     while v.current_epoch <= args.num_epochs:
+        if v.current_epoch > args.learning_rates[current_epoch_index][1]:
+            current_epoch_index += 1
+        for p in v.optimizer.param_groups:
+            p["lr"] = args.learning_rates[current_epoch_index][0]
         train()
         for key, value in test().items():
             v.writer.add_scalar(key, value, v.current_epoch)
-        os.makedirs(f"./saves/{tag}", exist_ok=True)
         torch.save(
             {
                 "epoch": v.current_epoch,
