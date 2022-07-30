@@ -113,6 +113,6 @@ if __name__ == "__main__":
         help="Experiment tag name.",
     )
     cli_args = parser.parse_args()
-    config, tag = cli_args.config, f"cli_args.config-{cli_args.tag}"
+    config, tag = cli_args.config, f"{cli_args.config}-{cli_args.tag}"
     configs.__dict__[config]()
     loop()
