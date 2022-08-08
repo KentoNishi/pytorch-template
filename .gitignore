@@ -1,6 +1,7 @@
 __pycache__
 data
-saves
+saves/**/*.pt
 .vscode
 .mypy_cache
 *.tmp
+**/**-ignore**
