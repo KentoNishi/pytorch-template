@@ -29,13 +29,13 @@ def _get_cifar_10_dataloaders():
         ]
     )
     trainset = datasets.CIFAR10(
-        root="./data", train=True, download=True, transform=transform_train
+        root=args.data_path, train=True, download=True, transform=transform_train
     )
     trainloader = DataLoader(
         trainset, batch_size=args.batch_size, shuffle=True, num_workers=args.num_workers
     )
     testset = datasets.CIFAR10(
-        root="./data", train=False, download=True, transform=transform_test
+        root=args.data_path, train=False, download=True, transform=transform_test
     )
     testloader = DataLoader(
         testset, batch_size=args.batch_size, shuffle=False, num_workers=args.num_workers

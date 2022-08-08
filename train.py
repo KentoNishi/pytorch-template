@@ -65,9 +65,9 @@ def loop():
     v.current_epoch = 1
     # v.lr_scheduler = ReduceLROnPlateau(v.optimizer, "max")
     v.criterion = torch.nn.CrossEntropyLoss()
-    os.makedirs(f"./saves/{tag}", exist_ok=True)
-    v.writer = SummaryWriter(log_dir=f"./saves/{tag}")
-    with open(f"./saves/{tag}/{tag}.json", "w+") as f:
+    os.makedirs(f"{args.save_path}/{tag}", exist_ok=True)
+    v.writer = SummaryWriter(log_dir=f"{args.save_path}/{tag}")
+    with open(f"{args.save_path}/{tag}/{tag}.json", "w+") as f:
         vs = vars(args)
         json.dump(
             { k: vs[k] for k in vs if not k.startswith("_") and not hasattr(vs[k], "__dict__") },
@@ -91,7 +91,7 @@ def loop():
                 "model_state_dict": v.model.state_dict(),
                 "optimizer_state_dict": v.optimizer.state_dict(),
             },
-            f"./saves/{tag}/{tag}.pt",
+            f"{args.save_path}/{tag}/{tag}.pt",
         )
         v.current_epoch += 1
 
