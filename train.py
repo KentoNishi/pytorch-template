@@ -1,4 +1,3 @@
-import argparse
 import os
 
 import torch
@@ -13,6 +12,7 @@ import args
 import configs
 import vars as v
 import json
+from utils import *
 
 
 def train():
@@ -70,7 +70,11 @@ def loop():
     with open(f"{args.save_path}/{tag}/{tag}.json", "w+") as f:
         vs = vars(args)
         json.dump(
-            { k: vs[k] for k in vs if not k.startswith("_") and not hasattr(vs[k], "__dict__") },
+            {
+                k: vs[k]
+                for k in vs
+                if not k.startswith("_") and not hasattr(vs[k], "__dict__")
+            },
             f,
             indent=2,
             default=lambda o: str(o),
@@ -97,22 +101,5 @@ def loop():
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "-c",
-        "--config",
-        type=str,
-        required=True,
-        help="Experiment config name.",
-    )
-    parser.add_argument(
-        "-t",
-        "--tag",
-        type=str,
-        required=True,
-        help="Experiment tag name.",
-    )
-    cli_args = parser.parse_args()
-    config, tag = cli_args.config, f"{cli_args.config}-{cli_args.tag}"
     configs.__dict__[config]()
     loop()
