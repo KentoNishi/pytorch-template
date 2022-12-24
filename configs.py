@@ -8,7 +8,7 @@ from torch.utils.data import DataLoader
 import args
 import vars as v
 import models
-from utils import *
+from cli import *
 
 
 def _get_cifar_10_dataloaders():

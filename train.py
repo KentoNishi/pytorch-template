@@ -8,11 +8,9 @@ from torch.optim import SGD
 from torch.utils.tensorboard import SummaryWriter
 from tqdm import tqdm
 
-import args
-import configs
+from configs import *
 import vars as v
 import json
-from utils import *
 
 
 def train():
@@ -101,5 +99,5 @@ def loop():
 
 
 if __name__ == "__main__":
-    configs.__dict__[config]()
+    globals()[config]()
     loop()
